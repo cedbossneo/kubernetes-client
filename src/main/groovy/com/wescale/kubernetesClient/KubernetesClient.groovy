@@ -1,13 +1,20 @@
 package com.wescale.kubernetesClient
 
+import com.wescale.kubernetesClient.resources.pods.Pod
 import groovy.json.JsonSlurper
+import groovy.transform.stc.ClosureParams
+import groovy.transform.stc.FromString
+import groovy.transform.stc.SimpleType
+import wslite.json.JSONObject
+import wslite.rest.RESTClient
 
 /**
  * Created by cedric on 23/09/2015.
  */
+@ToMapIgnore
 class KubernetesClient {
-    private String endpoint
-    private String namespace
+    public String endpoint
+    public String namespace = 'default'
 
     static KubernetesClient create(String endpoint) {
         new KubernetesClient(endpoint)
@@ -22,11 +29,25 @@ class KubernetesClient {
         this
     }
 
-    KubernetesClient pods(){
-        call('/pods')
-        this
+    List<Pod> pods(){
+        callOnNamespace().get(path: '/pods').json.items.collect { item ->
+            Pod pod = item as Pod
+            pod.client = this
+            pod
+        }
     }
 
-    KubernetesClient call(String url) {
+    Pod pod(Pod pod = new Pod()){
+        pod.client = this
+        pod
     }
+
+    RESTClient call() {
+        new RESTClient("$endpoint/api/v1")
+    }
+
+    RESTClient callOnNamespace(namespace = this.namespace) {
+        new RESTClient("$endpoint/api/v1/namespaces/$namespace")
+    }
+
 }
