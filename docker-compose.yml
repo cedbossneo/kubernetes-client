@@ -1,0 +1,38 @@
+etcd:  
+  image: quay.io/coreos/etcd:v2.0.12
+  restart: always
+  net: host
+  command: ['--name=paris-master', '--data-dir=/var/etcd/data', '--advertise-client-urls=http://10.100.40.43:4001,http://10.100.40.43:2379', '--initial-advertise-peer-urls=http://10.100.40.43:2380,http://10.100.40.43:7001', '--listen-client-urls=http://10.100.40.43:2379,http://10.100.40.43:4001,http://127.0.0.1:2379,http://127.0.0.1:4001', '--listen-peer-urls=http://10.100.40.43:2380,http://10.100.40.43:7001', '--initial-cluster=paris-master=http://10.100.40.43:2380,paris-master=http://10.100.40.43:7001', '--initial-cluster-token=etcd-cluster-1', '--initial-cluster-state=new']
+
+apiserver:  
+  image: gcr.io/google_containers/hyperkube:v1.0.3
+  restart: always
+  net: host
+  command: ["/hyperkube", "apiserver", "--service-cluster-ip-range=172.18.0.0/16", "--insecure-bind-address=0.0.0.0", "--etcd_servers=http://10.100.40.43:4001", "--cluster_name=kubernetes", "--v=2"]
+
+controller:  
+  image: gcr.io/google_containers/hyperkube:v1.0.3
+  restart: always
+  net: host
+  command: ["/hyperkube", "controller-manager", "--master=127.0.0.1:8080", "--v=2"]
+
+scheduler:  
+  image: gcr.io/google_containers/hyperkube:v1.0.3
+  restart: always
+  net: host
+  command: ["/hyperkube", "scheduler", "--master=127.0.0.1:8080", "--v=2"]
+
+kubelet:  
+  image: gcr.io/google_containers/hyperkube:v1.0.3
+  restart: always
+  net: host
+  command: ['/hyperkube', 'kubelet', '--api_servers=http://127.0.0.1:8080', '--v=2', '--address=0.0.0.0', '--enable_server', '--cluster_dns=172.18.0.4', '--cluster_domain=cluster.local']
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+
+proxy:  
+  image: gcr.io/google_containers/hyperkube:v1.0.3
+  restart: always
+  net: host
+  command: ['/hyperkube', 'proxy', '--master=http://127.0.0.1:8080', '--v=2']
+  privileged: true
