@@ -8,7 +8,7 @@ import groovy.transform.builder.SimpleStrategy
  * Created by cedric on 23/09/2015.
  */
 @Canonical
-@Builder(builderStrategy = SimpleStrategy)
+@Builder(builderStrategy = SimpleStrategy, prefix = "assign")
 class Container {
     String name
     String image
@@ -18,7 +18,7 @@ class Container {
     List<ContainerPort> ports
     List<ContainerEnv> env
     ContainerResources resources
-    List<ContainerVolumeMount> volumeMounts
+    List<ContainerVolumeMount> volumeMounts = []
     ContainerProbe livenessProbe
     ContainerProbe readinessProbe
     ContainerLifeCycle lifecycle

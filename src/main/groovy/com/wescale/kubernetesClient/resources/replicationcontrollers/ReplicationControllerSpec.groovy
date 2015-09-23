@@ -1,5 +1,6 @@
-package com.wescale.kubernetesClient.resources
+package com.wescale.kubernetesClient.resources.replicationcontrollers
 
+import com.wescale.kubernetesClient.resources.pods.Pod
 import groovy.transform.Canonical
 import groovy.transform.builder.Builder
 import groovy.transform.builder.SimpleStrategy
@@ -9,6 +10,9 @@ import groovy.transform.builder.SimpleStrategy
  */
 @Canonical
 @Builder(builderStrategy = SimpleStrategy, prefix = "assign")
-class Secret {
-    String secretName
+class ReplicationControllerSpec {
+    Integer replicas
+    Map selector = [:]
+    Pod template = new Pod()
+
 }

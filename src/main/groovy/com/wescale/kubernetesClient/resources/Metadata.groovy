@@ -8,7 +8,7 @@ import groovy.transform.builder.SimpleStrategy
  * Created by cedric on 23/09/2015.
  */
 @Canonical
-@Builder(builderStrategy = SimpleStrategy)
+@Builder(builderStrategy = SimpleStrategy, prefix = "assign")
 class Metadata {
     String name
     String generateName
@@ -19,6 +19,6 @@ class Metadata {
     Integer generation
     String creationTimestamp
     String deletionTimestamp
-    Map labels
-    Map annotations
+    Map labels = [:]
+    Map annotations = [:]
 }

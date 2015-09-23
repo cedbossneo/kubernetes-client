@@ -2,6 +2,7 @@ package com.wescale.kubernetesClient
 
 import com.wescale.kubernetesClient.resources.Metadata
 import groovy.transform.builder.Builder
+import groovy.transform.builder.SimpleStrategy
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.FromString
 import wslite.rest.ContentType
@@ -24,9 +25,9 @@ abstract class FluentModel<T> {
         kind = resourceKind()
     }
 
-    Metadata metadata(Metadata existing = new Metadata()){
+    T assignMetadata(Metadata existing = new Metadata()){
         this.metadata = existing
-        existing
+        this as T
     }
 
     KubernetesClient delete(){
@@ -42,6 +43,17 @@ abstract class FluentModel<T> {
             type "application/merge-json-patch+json"
             charset "US-ASCII"
             json patchObject
+        }
+        this as T
+    }
+
+    T update(@ClosureParams(value=FromString.class, options="T") Closure patch){
+        def newObject = toMap()
+        patch.call(newObject)
+        client.callOnNamespace(metadata.namespace).put(path: "/${resourceEndpoint()}/${metadata.name}"){
+            type ContentType.JSON
+            charset "US-ASCII"
+            json newObject
         }
         this as T
     }

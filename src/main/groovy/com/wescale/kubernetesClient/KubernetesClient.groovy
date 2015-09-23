@@ -1,6 +1,7 @@
 package com.wescale.kubernetesClient
 
 import com.wescale.kubernetesClient.resources.pods.Pod
+import com.wescale.kubernetesClient.resources.replicationcontrollers.ReplicationController
 import groovy.json.JsonSlurper
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.FromString
@@ -29,6 +30,14 @@ class KubernetesClient {
         this
     }
 
+    RESTClient call() {
+        new RESTClient("$endpoint/api/v1")
+    }
+
+    RESTClient callOnNamespace(namespace = this.namespace) {
+        new RESTClient("$endpoint/api/v1/namespaces/$namespace")
+    }
+
     List<Pod> pods(){
         callOnNamespace().get(path: '/pods').json.items.collect { item ->
             Pod pod = item as Pod
@@ -42,12 +51,28 @@ class KubernetesClient {
         pod
     }
 
-    RESTClient call() {
-        new RESTClient("$endpoint/api/v1")
+    Pod pod(String name){
+        Pod pod = callOnNamespace().get(path: "/pods/$name").json
+        pod.client = this
+        pod
     }
 
-    RESTClient callOnNamespace(namespace = this.namespace) {
-        new RESTClient("$endpoint/api/v1/namespaces/$namespace")
+    List<ReplicationController> replicationControllers(){
+        callOnNamespace().get(path: '/replicationcontrollers').json.items.collect { item ->
+            ReplicationController replicationController = item as ReplicationController
+            replicationController.client = this
+            replicationController
+        }
     }
 
+    ReplicationController replicationController(ReplicationController replicationController = new ReplicationController()){
+        replicationController.client = this
+        replicationController
+    }
+
+    ReplicationController replicationController(String name){
+        ReplicationController replicationController = callOnNamespace().get(path: "/replicationcontrollers/$name").json
+        replicationController.client = this
+        replicationController
+    }
 }
