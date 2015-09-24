@@ -18,6 +18,7 @@ class TestKubernetesClient {
     @Test
     public void testPods(){
         def client = KubernetesClient.create('http://192.168.99.100:8080')
+        client.namespace('testpod')
         if (client.pods().size() > 0){
             client.pods().get(0).delete()
         }
@@ -46,30 +47,32 @@ class TestKubernetesClient {
     @Test
     public void testServices(){
         def client = KubernetesClient.create('http://192.168.99.100:8080')
-        if (client.services().size() > 1){
-            client.services().get(1).delete()
+        client.namespace('testservice')
+        if (client.services().size() > 0){
+            client.services().get(0).delete()
         }
-        assert client.services().size() == 1
+        assert client.services().size() == 0
 
         client.service()
                 .assignMetadata(new Metadata(name: 'toto2'))
                 .assignSpec(new ServiceSpec(ports: [new ServicePort(port: 80, targetPort: 80)], selector: [name: 'toto']))
                 .create()
 
-        assert client.services().size() == 2
+        assert client.services().size() == 1
 
-        client.services().get(1).update { patch ->
+        client.services().get(0).update { patch ->
             patch.metadata.annotations.toto = 'tata'
         }
 
-        client.services().get(1).delete()
+        client.services().get(0).delete()
 
-        assert client.services().size() == 1
+        assert client.services().size() == 0
     }
 
     @Test
     public void testReplicationController(){
         def client = KubernetesClient.create('http://192.168.99.100:8080')
+        client.namespace('testrc')
 
         if (client.replicationControllers().size() > 0){
             client.replicationControllers().get(0).delete()
