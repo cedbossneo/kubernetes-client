@@ -12,12 +12,12 @@ class ContainerExecution {
     TcpSocket tcpSocket
 
     @Canonical
-    class Exec {
+    static class Exec {
         List<String> command
     }
 
     @Canonical
-    class HttpGet {
+    static class HttpGet {
         String path
         String port
         String host
@@ -25,7 +25,7 @@ class ContainerExecution {
     }
 
     @Canonical
-    class TcpSocket {
+    static class TcpSocket {
         String port
     }
 }

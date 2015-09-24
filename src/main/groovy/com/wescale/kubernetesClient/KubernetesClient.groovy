@@ -2,6 +2,8 @@ package com.wescale.kubernetesClient
 
 import com.wescale.kubernetesClient.resources.pods.Pod
 import com.wescale.kubernetesClient.resources.replicationcontrollers.ReplicationController
+import com.wescale.kubernetesClient.resources.services.Service
+import com.wescale.kubernetesClient.utils.MapUtil
 import groovy.json.JsonSlurper
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.FromString
@@ -40,7 +42,7 @@ class KubernetesClient {
 
     List<Pod> pods(){
         callOnNamespace().get(path: '/pods').json.items.collect { item ->
-            Pod pod = item as Pod
+            Pod pod = new Pod(item as Map)
             pod.client = this
             pod
         }
@@ -59,7 +61,7 @@ class KubernetesClient {
 
     List<ReplicationController> replicationControllers(){
         callOnNamespace().get(path: '/replicationcontrollers').json.items.collect { item ->
-            ReplicationController replicationController = item as ReplicationController
+            ReplicationController replicationController = new ReplicationController(item as Map)
             replicationController.client = this
             replicationController
         }
@@ -74,5 +76,24 @@ class KubernetesClient {
         ReplicationController replicationController = callOnNamespace().get(path: "/replicationcontrollers/$name").json
         replicationController.client = this
         replicationController
+    }
+
+    List<Service> services(){
+        callOnNamespace().get(path: '/services').json.items.collect { item ->
+            Service service = new Service(item as Map)
+            service.client = this
+            service
+        }
+    }
+
+    Service service(Service service = new Service()){
+        service.client = this
+        service
+    }
+
+    Service service(String name){
+        Service service = callOnNamespace().get(path: "/services/$name").json
+        service.client = this
+        service
     }
 }

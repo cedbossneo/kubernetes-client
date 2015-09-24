@@ -17,23 +17,23 @@ class ContainerStatus {
     String containerID
 
     @Canonical
-    class State{
+    static class State{
         Waiting waiting
         Running running
         Terminated terminated
 
         @Canonical
-        class Waiting {
+        static class Waiting {
             String reason
         }
 
         @Canonical
-        class Running {
+        static class Running {
             String startedAt
         }
 
         @Canonical
-        class Terminated {
+        static class Terminated {
             Integer exitCode
             Integer signal
             String reason

@@ -13,13 +13,13 @@ class ContainerSecurityContext {
     Integer runAsUser
 
     @Canonical
-    class Capabilities {
+    static class Capabilities {
         List<Object> add
         List<Object> drop
     }
 
     @Canonical
-    class SeLinuxOptions {
+    static class SeLinuxOptions {
         String user
         String role
         String type
