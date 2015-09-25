@@ -1,9 +1,8 @@
 package com.wescale.kubernetesClient.resources.replicationcontrollers
 
 import com.wescale.kubernetesClient.FluentModel
-import com.wescale.kubernetesClient.ResourceEndpoint
+import com.wescale.kubernetesClient.KubernetesResource
 import com.wescale.kubernetesClient.resources.pods.Pod
-import com.wescale.kubernetesClient.resources.pods.PodSpec
 import groovy.transform.Canonical
 import groovy.transform.builder.Builder
 import groovy.transform.builder.SimpleStrategy
@@ -13,7 +12,7 @@ import groovy.transform.builder.SimpleStrategy
  */
 @Canonical
 @Builder(builderStrategy = SimpleStrategy, prefix = "assign")
-@ResourceEndpoint('replicationcontrollers')
+@KubernetesResource(endpoint = 'replicationcontrollers')
 class ReplicationController extends FluentModel<ReplicationController>{
     ReplicationControllerSpec spec = new ReplicationControllerSpec()
     ReplicationControllerStatus status = new ReplicationControllerStatus()

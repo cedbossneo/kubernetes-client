@@ -8,6 +8,6 @@ import java.lang.annotation.RetentionPolicy
  */
 
 @Retention(RetentionPolicy.RUNTIME)
-@interface ResourceEndpoint {
-    String value() default ""
+@interface KubernetesResource {
+    String endpoint() default ""
 }

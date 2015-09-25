@@ -1,4 +1,4 @@
-package com.wescale.kubernetesClient.resources.containers
+package com.wescale.kubernetesClient.resources.pods
 
 import groovy.transform.Canonical
 

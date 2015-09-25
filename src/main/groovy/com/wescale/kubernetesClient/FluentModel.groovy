@@ -42,7 +42,7 @@ abstract class FluentModel<T> {
     }
 
     def resourceEndpoint() {
-        getClass().getAnnotation(ResourceEndpoint).value()
+        getClass().getAnnotation(KubernetesResource).endpoint()
     }
 
     T patch(@ClosureParams(value = FromString.class, options = "T") Closure patch) {

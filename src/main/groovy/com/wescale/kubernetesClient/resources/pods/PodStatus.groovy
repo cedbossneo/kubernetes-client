@@ -1,7 +1,6 @@
 package com.wescale.kubernetesClient.resources.pods
 
 import com.wescale.kubernetesClient.ToMapIgnore
-import com.wescale.kubernetesClient.resources.containers.PodCondition
 import com.wescale.kubernetesClient.resources.containers.ContainerStatus
 import groovy.transform.Canonical
 

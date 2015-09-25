@@ -1,5 +1,7 @@
 package com.wescale.kubernetesClient
 
+import com.wescale.kubernetesClient.resources.bindings.Binding
+import com.wescale.kubernetesClient.resources.componentStatuses.ComponentStatus
 import com.wescale.kubernetesClient.resources.pods.Pod
 import com.wescale.kubernetesClient.resources.replicationcontrollers.ReplicationController
 import com.wescale.kubernetesClient.resources.services.Service
@@ -95,5 +97,20 @@ class KubernetesClient {
         Service service = callOnNamespace().get(path: "/services/$name").json
         service.client = this
         service
+    }
+
+    Binding binding(Service binding = new Binding()){
+        binding.client = this
+        binding
+    }
+
+    List<ComponentStatus> componentStatuses(){
+        callOnNamespace().get(path: '/componentstatuses').json.items.collect { item ->
+            new ComponentStatus(item as Map)
+        }
+    }
+
+    ReplicationController componentStatuse(String name){
+        callOnNamespace().get(path: "/componentstatuses/$name").json
     }
 }
