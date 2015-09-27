@@ -2,15 +2,10 @@ package com.wescale.kubernetesClient
 
 import com.wescale.kubernetesClient.resources.bindings.Binding
 import com.wescale.kubernetesClient.resources.componentStatuses.ComponentStatus
+import com.wescale.kubernetesClient.resources.nodes.Node
 import com.wescale.kubernetesClient.resources.pods.Pod
 import com.wescale.kubernetesClient.resources.replicationcontrollers.ReplicationController
 import com.wescale.kubernetesClient.resources.services.Service
-import com.wescale.kubernetesClient.utils.MapUtil
-import groovy.json.JsonSlurper
-import groovy.transform.stc.ClosureParams
-import groovy.transform.stc.FromString
-import groovy.transform.stc.SimpleType
-import wslite.json.JSONObject
 import wslite.rest.RESTClient
 
 /**
@@ -56,7 +51,7 @@ class KubernetesClient {
     }
 
     Pod pod(String name){
-        Pod pod = callOnNamespace().get(path: "/pods/$name").json
+        Pod pod = new Pod(callOnNamespace().get(path: "/pods/$name").json as Map)
         pod.client = this
         pod
     }
@@ -75,7 +70,7 @@ class KubernetesClient {
     }
 
     ReplicationController replicationController(String name){
-        ReplicationController replicationController = callOnNamespace().get(path: "/replicationcontrollers/$name").json
+        ReplicationController replicationController = new ReplicationController(callOnNamespace().get(path: "/replicationcontrollers/$name").json as Map)
         replicationController.client = this
         replicationController
     }
@@ -94,12 +89,12 @@ class KubernetesClient {
     }
 
     Service service(String name){
-        Service service = callOnNamespace().get(path: "/services/$name").json
+        Service service = new Service(callOnNamespace().get(path: "/services/$name").json as Map)
         service.client = this
         service
     }
 
-    Binding binding(Service binding = new Binding()){
+    Binding binding(Binding binding = new Binding()) {
         binding.client = this
         binding
     }
@@ -113,4 +108,25 @@ class KubernetesClient {
     ReplicationController componentStatuse(String name){
         callOnNamespace().get(path: "/componentstatuses/$name").json
     }
+
+    List<Node> nodes() {
+        call().get(path: '/nodes').json.items.collect { item ->
+            Node node = new Node(item as Map)
+            node.client = this
+            node
+        }
+    }
+
+    Node node(Node node = new Node()) {
+        node.client = this
+        node
+    }
+
+    Node node(String name) {
+        Node node = new Node(call().get(path: "/nodes/$name").json as Map)
+        node.client = this
+        node
+    }
+
+
 }

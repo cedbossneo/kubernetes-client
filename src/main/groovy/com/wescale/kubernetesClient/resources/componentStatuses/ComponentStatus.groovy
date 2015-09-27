@@ -1,9 +1,6 @@
 package com.wescale.kubernetesClient.resources.componentStatuses
 
-import com.wescale.kubernetesClient.KubernetesResource
 import groovy.transform.Canonical
-import groovy.transform.builder.Builder
-import groovy.transform.builder.SimpleStrategy
 
 /**
  * Created by cedric on 25/09/2015.

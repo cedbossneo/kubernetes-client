@@ -16,10 +16,16 @@ import org.junit.Test
 class TestKubernetesClient {
 
     @Test
-    public void testPods(){
+    public void testNodes() {
+        def client = KubernetesClient.create('http://192.168.99.100:8080')
+        assert client.node('default').ready()
+    }
+
+    @Test
+    public void testPods() {
         def client = KubernetesClient.create('http://192.168.99.100:8080')
         client.namespace('testpod')
-        if (client.pods().size() > 0){
+        if (client.pods().size() > 0) {
             client.pods().get(0).delete()
         }
         assert client.pods().size() == 0
@@ -30,7 +36,7 @@ class TestKubernetesClient {
                 .create()
 
         assert client.pods().size() == 1
-        while (!client.pod('toto2').ready()){
+        while (!client.pod('toto2').ready()) {
             log.info('Waiting for toto2 to be ready')
             Thread.sleep(1000)
         }
