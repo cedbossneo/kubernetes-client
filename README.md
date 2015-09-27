@@ -1,6 +1,19 @@
 # kubernetes-client
 Fluent Kubernetes Client
 
+```
+repositories {
+    maven {
+        url  "http://dl.bintray.com/cedbossneo/maven" 
+    }
+}
+
+compile 'com.wescale:kubernetes-client:0.0.1'
+
+```
+
+
+
 ## To create a pod :
 
 ```groovy
